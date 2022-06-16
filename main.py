@@ -26,8 +26,8 @@ async def portScanner(request):
   if not ((0 <= pFrom <= 65535) and (0 <= pTo <= 65535)):
     return web.Response(text="Порты должны быть в диапазоне от 0 до 65535", status=400)
 
-  if pFrom >= pTo:
-    return web.Response(text="Необходимо указывать порты от меньшего к большему. Разница между портами не должна быть нулевой", status=400)
+  if pFrom > pTo:
+    return web.Response(text="Необходимо указывать порты от меньшего к большему", status=400)
 
   return web.Response(text="Проверка портов у "+ip+" от "+str(pFrom)+" до "+str(pTo))
 
