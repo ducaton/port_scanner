@@ -70,23 +70,32 @@ async def portScanner(request):
   # Значения: 1-65535
   scanChunkSize = 1000
 
-  # Если диапазон превышает размер куска, то сканировать по частям
-  if pTo - pFrom > scanChunkSize:
-    for reqPart in range(pFrom, pTo, scanChunkSize):
-      # Если осталось сканировать меньше, чем ограничено куском, то его не использовать
-      if pTo - reqPart < scanChunkSize:
-        scanResult += await portScan(ip, reqPart, pTo)
-      # Сканирование по размеру куска
-      else:
-        scanResult += await portScan(ip, reqPart, reqPart+scanChunkSize)
-    # Чтобы range() не игнорировал последнее число
-    scanResult += await portScan(ip, pTo, pTo+1)
-  else:
-    scanResult += await portScan(ip, pFrom, pTo+1)
+  try:
+    # Если диапазон превышает размер куска, то сканировать по частям
+    if pTo - pFrom > scanChunkSize:
+      for reqPart in range(pFrom, pTo, scanChunkSize):
+        # Если осталось сканировать меньше, чем ограничено куском, то его не использовать
+        if pTo - reqPart < scanChunkSize:
+          scanResult += await portScan(ip, reqPart, pTo)
+        # Сканирование по размеру куска
+        else:
+          scanResult += await portScan(ip, reqPart, reqPart+scanChunkSize)
+      # Чтобы range() не игнорировал последнее число
+      scanResult += await portScan(ip, pTo, pTo+1)
+    else:
+      scanResult += await portScan(ip, pFrom, pTo+1)
+  except Exception as e:
+    err = "Сканирование не удалось"
+    syslog(3, request.remote + " - внутренняя ошибка сервера: " + err + ". " + str(type(e)) + ": " + str(e))
+    return web.Response(text=err, status=500)
 
-  syslog(6, request.remote + " - диапазон просканирован и отправлен")
+
+  syslog(6, request.remote + " - диапазон " + str(pFrom) + "-" + str(pTo) + " просканирован и будет отправлен")
   return web.Response(text=dumps(scanResult), headers={"content-type": "application/json"})
 
-app = web.Application()
-app.add_routes(routes)
-web.run_app(app)
+try:
+  app = web.Application()
+  app.add_routes(routes)
+  web.run_app(app)
+except Exception as e:
+  syslog(2, "Сервер не может запуститься: " + str(type(e)) + ": " + str(e))
