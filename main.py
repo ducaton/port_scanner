@@ -12,12 +12,12 @@ async def portStatus(ip, port):
     try:
       await asyncio.wait_for(s, timeout=1)
       s.close()
-      return {"port": port, "state": "open"}
+      return {"port": str(port), "state": "open"}
     except asyncio.TimeoutError:
       s.close()
-      return {"port": port, "state": "close"}
+      return {"port": str(port), "state": "close"}
   except:
-    return {"port": port, "state": "close"}
+    return {"port": str(port), "state": "close"}
 
 async def portScan(ip, pFrom, pTo):
   tasks = []
@@ -93,9 +93,16 @@ async def portScanner(request):
   syslog(6, request.remote + " - диапазон " + str(pFrom) + "-" + str(pTo) + " просканирован и будет отправлен")
   return web.Response(text=dumps(scanResult), headers={"content-type": "application/json"})
 
-try:
-  app = web.Application()
-  app.add_routes(routes)
-  web.run_app(app)
-except Exception as e:
-  syslog(2, "Сервер не может запуститься: " + str(type(e)) + ": " + str(e))
+def startServer():
+  try:
+    app = web.Application()
+    app.add_routes(routes)
+    # Проверка запущен ли unittest
+    if __name__ == "__main__":
+      web.run_app(app)
+    else:
+      return app      
+  except Exception as e:
+    syslog(2, "Сервер не может запуститься: " + str(type(e)) + ": " + str(e))
+
+startServer()
