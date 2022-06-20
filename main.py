@@ -43,7 +43,7 @@ async def portScanner(request):
     pFrom = int(link[3])
     pTo = int(link[4])
   except ValueError:
-    err = "Порты должны цифрами"
+    err = "Порты должны быть цифрами"
     syslog(6, request.remote + " - некорректный запрос: " + err)
     return web.Response(text=err, status=400)
 
