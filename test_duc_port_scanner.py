@@ -1,4 +1,4 @@
-import main
+import duc_port_scanner
 from aiohttp.test_utils import AioHTTPTestCase
 from random import randrange
 from json import loads
@@ -8,7 +8,7 @@ ip = "216.58.215.110"
 class PortScannerTest(AioHTTPTestCase):
 
   async def get_application(self):
-    return main.startServer()
+    return duc_port_scanner.startServer()
 
   async def testIncompleteLink(self):
     async with self.client.request("GET", "/scan/") as resp:
