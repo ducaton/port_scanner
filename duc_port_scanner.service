@@ -1,0 +1,9 @@
+[Unit]
+Description=Port scanner server on 54321 port
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/duc_port_scanner
+
+[Install]
+WantedBy=multi-user.target
