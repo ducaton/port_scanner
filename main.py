@@ -99,7 +99,7 @@ def startServer():
     app.add_routes(routes)
     # Проверка запущен ли unittest
     if __name__ == "__main__":
-      web.run_app(app)
+      web.run_app(app, port=54321)
     else:
       return app      
   except Exception as e:
