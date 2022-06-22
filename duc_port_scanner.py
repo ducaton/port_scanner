@@ -27,30 +27,22 @@ async def portScan(ip, pFrom, pTo):
   return await results
 
 #GET /scan/<ip>/<begin_port>/<end_port>
-@routes.get("/scan/{tail:.*}")
+@routes.get("/scan/{ip}/{pFrom}/{pTo}")
 async def portScanner(request):
   syslog(6, request.remote + " " + request.method + " " + request.path)
 
-  link = request.path.split("/")
-
-  if len(link) != 5:
-    err = "Необходимый вид запроса: /scan/<ip>/<begin_port>/<end_port>"
-    syslog(6, request.remote + " - некорректный запрос: " + err)
-    return web.Response(text=err, status=400)
-  ip = link[2]
-
   try:
-    pFrom = int(link[3])
-    pTo = int(link[4])
-  except ValueError:
-    err = "Порты должны быть цифрами"
-    syslog(6, request.remote + " - некорректный запрос: " + err)
-    return web.Response(text=err, status=400)
-
-  try:
-    ip_address(ip)
+    ip = ip_address(request.match_info['ip'])
   except:
     err = "Указан некорректный IP"
+    syslog(6, request.remote + " - некорректный запрос: " + err)
+    return web.Response(text=err, status=400)
+
+  try:
+    pFrom = int(request.match_info['pFrom'])
+    pTo = int(request.match_info['pTo'])
+  except ValueError:
+    err = "Порты должны быть цифрами"
     syslog(6, request.remote + " - некорректный запрос: " + err)
     return web.Response(text=err, status=400)
 

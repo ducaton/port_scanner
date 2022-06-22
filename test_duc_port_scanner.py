@@ -10,12 +10,6 @@ class PortScannerTest(AioHTTPTestCase):
   async def get_application(self):
     return duc_port_scanner.startServer()
 
-  async def testIncompleteLink(self):
-    async with self.client.request("GET", "/scan/") as resp:
-      self.assertEqual(resp.status, 400)
-      text = await resp.text()
-    self.assertEqual(text, "Необходимый вид запроса: /scan/<ip>/<begin_port>/<end_port>")
-
   async def testIfPortFromIsInt(self):
     async with self.client.request("GET", "/scan/" + ip + "/uh/300") as resp:
       self.assertEqual(resp.status, 400)
