@@ -3,7 +3,10 @@ from aiohttp.test_utils import AioHTTPTestCase
 from random import randrange
 from json import loads
 
-ip = "216.58.215.110"
+ip = ""
+
+if ip == "":
+  raise(SystemExit("IP не указан"))
 
 class PortScannerTest(AioHTTPTestCase):
 
