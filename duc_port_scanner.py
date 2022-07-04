@@ -32,7 +32,7 @@ async def portScanner(request):
   syslog(6, request.remote + " " + request.method + " " + request.path)
 
   try:
-    ip = ip_address(request.match_info['ip'])
+    ip = str(ip_address(request.match_info['ip']))
   except:
     err = "Указан некорректный IP"
     syslog(6, request.remote + " - некорректный запрос: " + err)
