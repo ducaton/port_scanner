@@ -22,13 +22,11 @@
 * .spec для сборки RPM-пакета под Fedora 35.
 
 ## Тестирование
-* указать IP для сканирования в `test_duc_port_scanner.py`
-* `python -m unittest -v`
+1. Указать IP для сканирования в `test_duc_port_scanner.py`
+2. `python -m unittest -v`
 ## Запуск
 `python duc_port_scanner.py`
 ## Использование
-`GET localhost:54321/scan/<ip>/<begin_port>/<end_port>`
-
 Например командой:
 
-`curl localhost:54321/scan/127.0.0.1/0/200`
+`$curl localhost:54321/scan/127.0.0.1/54318/54324`
